@@ -134,6 +134,9 @@ def modify_task(kwarg):
 
         if 'priority_level' in data and data['priority_level'] > 0 and data['priority_level'] < 1:
             task.priority_level = data['priority_level']
+        
+        if 'date_due' in data:
+            task.date_due = data['date_due']
 
         db.session.commit()
 

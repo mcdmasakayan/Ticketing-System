@@ -13,6 +13,6 @@ class Task(db.Model):
     priority_level = db.Column(db.Integer)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     date_updated = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.now)
-    date_due = db.Column(db.DateTime, default=datetime.utcnow, nullable=True)
+    date_due = db.Column(db.DateTime)
     archived = db.Column(db.Boolean)
     tasks = db.relationship(Subtask, backref='task')

@@ -114,6 +114,9 @@ def modify_subtask(kwarg):
         if 'priority_level' in data and data['priority_level'] > 0 and data['priority_level'] < 1:
             subtask.priority_level = data['priority_level']
 
+        if 'date_due' in data:
+            subtask.date_due = data['date_due']
+            
         db.session.commit()
 
         return jsonify({'message':Message.subtask_archived})
