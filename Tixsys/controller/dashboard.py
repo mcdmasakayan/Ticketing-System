@@ -6,25 +6,14 @@ from model.dashboard.crud import open_dashboard
 def dashboard_system():
     user_request = request.get_json()
 
+    commands = {'open_dashboard': (open_dashboard, 'GET'),
+                'create_project': (create_project, 'POST'),
+                'archive_project': (archive_project, 'PATCH'),
+                'logout_user': (logout_user, 'PATCH')}
+    
     if 'command' in user_request:
-        if user_request['command'] == 'open_dashboard' and request.method == 'GET':
-            response = open_dashboard()
+        action, method = commands.get(user_request['command'], (None, None))
 
-            return response
-        
-        elif user_request['command'] == 'create_project' and request.method == 'POST':
-            response = create_project()
-
-            return response
-        
-        elif user_request['command'] == 'archive_project' and request.method == 'PATCH':
-            response = archive_project()
-
-            return response
-        
-        elif user_request['command'] == 'logout_user' and request.method == 'PATCH':
-            response = logout_user()
-
-            return response
-        
+        if action and request.method == method:
+            return action()
         

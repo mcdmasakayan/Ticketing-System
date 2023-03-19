@@ -3,9 +3,10 @@ from model.settings.crud import archive_user
 
 def settings_system(**kwargs):
     user_request = request.get_json()
+    commands = {'archive_user': (archive_user, 'PATCH')}
 
     if 'command' in user_request:
-        if user_request['command'] == 'archive_user' and request.method == 'PATCH':
-            response = archive_user(kwargs)
+        action, method = commands.get(user_request['command'], (None, None))
 
-            return response
+        if action and request.method == method:
+            return action(kwargs)

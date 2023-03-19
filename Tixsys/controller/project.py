@@ -4,34 +4,15 @@ from model.project.crud import create_project, open_project, archive_project
 
 def project_system(**kwargs):
     user_request = request.get_json()
-
+    commands = {'create_project': (create_project, 'POST'),
+                'open_project': (open_project, 'GET'),
+                'archive_project': (archive_project, 'PATCH'),
+                'create_task': (create_task, 'POST'),
+                'archive_task': (archive_task, 'PATCH'),
+                'move_task': (move_task, 'PATCH')}
+    
     if 'command' in user_request:
-        if user_request['command'] == 'create_project' and request.method == 'POST':
-            response = create_project()
+        action, method = commands.get(user_request['command'], (None, None))
 
-            return response
-        
-        elif user_request['command'] == 'open_project' and request.method == 'GET':
-            response = open_project(kwargs)
-
-            return response
-        
-        elif user_request['command'] == 'archive_project' and request.method == 'PATCH':
-            response = archive_project(kwargs)
-
-            return response
-        
-        elif user_request['command'] == 'create_task' and request.method == 'POST':
-            response = create_task(kwargs)
-
-            return response
-        
-        elif user_request['command'] == 'archive_task' and request.method == 'PATCH':
-            response = archive_task(kwargs)
-
-            return response
-        
-        elif user_request['command'] == 'move_task' and request.method == 'PATCH':
-            response = move_task(kwargs)
-
-            return response
+        if action and request.method == method:
+            return action(kwargs)

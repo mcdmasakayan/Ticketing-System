@@ -49,3 +49,5 @@ class Message:
     subtask_not_created = 'Subtask not created.'
     subtask_archived = ' Subtask archived.'
     subtask_not_archived = 'Subtask archived.'
+    subtask_completed = 'Subtask completed.'
+    subtask_not_completed = 'Subtask not completed.'
