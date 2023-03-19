@@ -1,4 +1,4 @@
-from model.subtask.crud import create_subtask, archive_subtask, toggle_subtask
+from model.subtask.crud import create_subtask, archive_subtask, toggle_subtask, modify_subtask
 
 def new_subtask(kwargs):
     response = create_subtask(kwargs)
@@ -12,5 +12,10 @@ def remove_subtask(kwargs):
 
 def complete_subtask(kwargs):
     response = toggle_subtask(kwargs)
+
+    return response
+
+def edit_subtask(kwargs):
+    response = modify_subtask(kwargs)
 
     return response

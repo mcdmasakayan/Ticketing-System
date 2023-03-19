@@ -74,15 +74,16 @@ def open_project(kwarg):
     
     return jsonify({'message':Message.project_not_opened})
     
-def archive_project(_):
+def archive_project(kwarg):
     user_id = check_session()
 
     if not user_id:
         return jsonify({'message':Message.not_logged_in})
     
+    project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
     data = request.get_json()
 
-    if 'project_id' in data:
+    if 'project_id' in data and project:
         project = Project.query.filter_by(public_id=data['project_id'], user_id=user_id, archived=False).first()
         tasks = Task.query.filter_by(project_id=project.public_id, archived=False).all()
         
@@ -100,3 +101,27 @@ def archive_project(_):
         return jsonify({'message':Message.project_archived})
 
     return jsonify({'message':Message.project_not_archived})
+
+def modify_project(kwarg):
+    user_id = check_session()
+
+    if not user_id:
+        return jsonify({'message':Message.not_logged_in})
+    
+    project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
+    data = request.get_json()
+
+    if 'project_id' in data and project:
+        project = Project.query.filter_by(public_id=data['project_id'], user_id=user_id, archived=False).first()
+        
+        if 'name' in data and data['name']:
+            project.name = data['name']
+
+        if 'description' in data:
+            project.description = data['description']
+
+        db.session.commit()
+
+        return jsonify({'message':Message.project_modified})
+
+    return jsonify({'message':Message.project_not_modified})

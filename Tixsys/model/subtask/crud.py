@@ -89,3 +89,30 @@ def toggle_subtask(kwarg):
         return jsonify({'message':Message.subtask_completed})
 
     return jsonify({'message':Message.subtask_not_completed})
+
+def modify_subtask(kwarg):
+    user_id = check_session()
+
+    if not user_id:
+        return jsonify({'message':Message.not_logged_in})
+    
+    project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
+    task = Task.query.filter_by(project_id=project.public_id, name=kwarg['task_name'], archived=False).first()
+
+    data = request.get_json()
+
+    if 'subtask_id' in data and 'task_id' in data and 'project_id' in data and project and task:
+        task = Task.query.filter_by(public_id=data['task_id'], project_id=data['project_id'], archived=False).first()
+        subtask = Subtask.query.filter_by(public_id=data['subtask_id'], task_id=task.public_id, archived=False).first()
+        
+        if 'name' in data and data['name']:
+            subtask.name = data['name']
+
+        if 'description' in data:
+            subtask.description = data['description']
+
+        db.session.commit()
+
+        return jsonify({'message':Message.subtask_archived})
+
+    return jsonify({'message':Message.subtask_not_archived})

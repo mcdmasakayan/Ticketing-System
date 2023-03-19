@@ -30,6 +30,8 @@ class Message:
     project_not_opened = 'Project not opened.'
     project_archived = 'Project archived.'
     project_not_archived = 'Project not archived.'
+    project_modified = 'Project modified.'
+    project_not_modified = 'Project not modified.'
     project_deleted = 'Project deleted.'
     project_not_deleted = 'Project not deleted.'
 
@@ -42,6 +44,8 @@ class Message:
     task_not_archived = 'Task not archived.'
     task_moved = 'Task moved.'
     task_not_moved = 'Task not moved.'
+    task_modified = 'Task modified'
+    task_not_modified = 'Task not modified.'
 
     #Subtask
     subtask_exists = 'Subtask name already exists. Subtask not created.'

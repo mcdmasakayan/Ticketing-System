@@ -14,7 +14,6 @@ def create_task(kwarg):
         return jsonify({'message':Message.not_logged_in})
     
     project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
-
     data = request.get_json()
     
     if 'project_id' in data and project:
@@ -77,10 +76,11 @@ def archive_task(kwarg):
         return jsonify({'message':Message.not_logged_in})
     
     project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
+    task = Task.query.filter_by(project_id=project.public_id, name=kwarg['task_name'], archived=False).first()
     data = request.get_json()
 
-    if 'project_id' in data and 'task_id' in data and project:
-        task = Task.query.filter_by(public_id=data['task_id'], project_id=project.public_id, archived=False).first()
+    if 'project_id' in data and 'task_id' in data and project and task:
+        task = Task.query.filter_by(public_id=data['task_id'], project_id=data['project_id'], archived=False).first()
         subtasks = Subtask.query.filter_by(task_id=task.public_id, archived=False).all()
         
         for subtask in subtasks:
@@ -112,3 +112,28 @@ def move_task(kwarg):
             return jsonify({'message':Message.task_moved})
 
     return jsonify({'message':Message.task_not_moved})
+
+def modify_task(kwarg):
+    user_id = check_session()
+
+    if not user_id:
+        return jsonify({'message':Message.not_logged_in})
+    
+    project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
+    task = Task.query.filter_by(project_id=project.public_id, name=kwarg['task_name'], archived=False).first()
+    data = request.get_json()
+
+    if 'project_id' in data and 'task_id' in data and project and task:
+        task = Task.query.filter_by(public_id=data['task_id'], project_id=data['project_id'], archived=False).first()
+        
+        if 'name' in data:
+            task.name = data['name']
+        
+        if 'description' in data:
+            task.description = data['name']
+
+        db.session.commit()
+
+        return jsonify({'message':Message.task_modified})
+
+    return jsonify({'message':Message.task_not_modified})
