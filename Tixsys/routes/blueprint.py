@@ -8,8 +8,8 @@ from controller.settings import settings_system
 
 bp = Blueprint('bp', __name__)
 
-bp.route(Link.settings, methods=['GET', 'PATCH'])(settings_system)
-bp.route(Link.login, methods=['POST'])(login_system)
-bp.route(Link.dashboard, methods=['GET', 'POST', 'PATCH'])(dashboard_system)
-bp.route(Link.project, methods=['GET', 'POST', 'PATCH'])(project_system)
-bp.route(Link.task, methods=['GET', 'POST', 'PATCH'])(task_system)
+bp.route('/dashboard/settings', methods=['GET', 'PATCH'])(settings_system)
+bp.route('/login', methods=['POST'])(login_system)
+bp.route('/dashboard', methods=['GET', 'POST', 'PATCH'])(dashboard_system)
+bp.route('/dashboard/<string:project_name>', methods=['GET', 'POST', 'PATCH'])(project_system)
+bp.route('/dashboard/<string:project_name>/<string:task_name>', methods=['GET', 'POST', 'PATCH'])(task_system)

@@ -1,12 +1,4 @@
 progress_list = ['In Progress', 'Revisions', 'Testing', 'Deployment']
-
-class Link:
-    admin = '/admin'
-    settings = '/dashboard/settings'
-    login = '/login'
-    dashboard = '/dashboard'
-    project = '/dashboard/<string:project_name>'
-    task = '/dashboard/<string:project_name>/<string:task_name>'
     
 class Message:
     #System
