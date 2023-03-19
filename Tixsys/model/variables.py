@@ -5,15 +5,18 @@ class Message:
     next_update = 'This feature will be in the next update.'
 
     #User
+    already_logged_in = 'User already logged in.'
     not_logged_in = 'User not logged in.'
-    access_granted = 'Access Granted.'
-    access_not_granted = 'Access Denied.'
+    access_granted = 'Access granted.'
+    access_not_granted = 'Access denied.'
     email_exists = 'Email already exists. User not registered.'
     username_exists = 'Username already exists. User not registered.'
     user_registered = 'User registered.'
     user_not_registered = 'User not registered.'
     user_archived = 'User archived.'
     user_not_archived = 'User not archived.'
+    logged_out = 'User logged out.'
+    already_logged_out = 'User already logged out.'
 
     #Project
     project_exists = 'Project name already exists. Project not created.'

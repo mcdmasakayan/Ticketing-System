@@ -4,6 +4,7 @@ from flask_sessionstore import Session
 from routes.blueprint import bp
 from model.init_db import db
 from flask_cors import CORS
+from datetime import timedelta
 
 def create_app():
     app = Flask(__name__)
@@ -12,6 +13,7 @@ def create_app():
     Session(app)
     CORS(app)
     
+    app.permanent_session_lifetime = timedelta(minutes=5)
     with app.test_request_context():
         db.init_app(app)
         

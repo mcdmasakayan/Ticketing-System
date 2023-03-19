@@ -4,9 +4,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from model.variables import Message
 from model.init_db import db
 from model.user.data import User
-from middleware.session import add_to_session
+from middleware.session import check_session, add_to_session
 
 def verify_user():
+    user_id = check_session()
     entry = ''
     users = User.query.filter_by(archived=False).all()
     data = request.get_json()
@@ -19,9 +20,12 @@ def verify_user():
     
     if entry:
         for user in users:
-                if ((data[entry] == getattr(user, entry)) and
+                if user_id == user.public_id:
+                    return jsonify({'message':Message.already_logged_in})
+
+                elif ((data[entry] == getattr(user, entry)) and
                     (check_password_hash(user.password, data['password']))):
-                       
+                    
                     add_to_session(user.public_id)
 
                     return jsonify({'message':Message.access_granted})
@@ -56,6 +60,3 @@ def register_user():
         return jsonify({'message':Message.user_registered})
     
     return jsonify({'message':Message.user_not_registered})
-
-def logout_user():
-    return jsonify({'message':Message.next_update})

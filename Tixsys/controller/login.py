@@ -1,5 +1,5 @@
 from flask import request
-from model.user.crud import verify_user, register_user, logout_user
+from model.user.crud import verify_user, register_user
 
 def login_system():
     user_request = request.get_json()

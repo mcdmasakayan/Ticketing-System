@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from middleware.session import check_session
+from middleware.session import check_session, clear_session
 from model.variables import Message
 from model.init_db import db
 from model.user.data import User
@@ -37,3 +37,13 @@ def archive_user():
             return jsonify({'message':Message.user_archived})
 
     return jsonify({'message':Message.user_not_archived})
+
+def logout_user(_):
+    user_id = check_session()
+
+    if not user_id:
+        return jsonify({'message':Message.already_logged_out})
+    
+    clear_session()
+    
+    return jsonify({'message':Message.logged_out})

@@ -1,5 +1,4 @@
 from flask import Blueprint
-from model.variables import Link
 from controller.login import login_system
 from controller.project import project_system
 from controller.task import task_system

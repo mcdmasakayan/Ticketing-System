@@ -15,5 +15,6 @@ def add_to_session(public_id):
 
     else:
         session['public_id'] = public_id
-    
-    print(session.get('public_id'))
+
+def clear_session():
+    session.clear()
