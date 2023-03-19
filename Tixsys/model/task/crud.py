@@ -132,6 +132,9 @@ def modify_task(kwarg):
         if 'description' in data:
             task.description = data['name']
 
+        if 'priority_level' in data and data['priority_level'] > 0 and data['priority_level'] < 1:
+            task.priority_level = data['priority_level']
+
         db.session.commit()
 
         return jsonify({'message':Message.task_modified})
