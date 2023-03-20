@@ -11,5 +11,6 @@ class Project(db.Model):
     description = db.Column(db.Text)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     date_updated = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.now)
+    date_archived = db.Column(db.DateTime)
     archived = db.Column(db.Boolean)
     tasks = db.relationship(Task, backref='project')

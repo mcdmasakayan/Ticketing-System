@@ -12,5 +12,6 @@ class Subtask(db.Model):
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     date_updated = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.now)
     date_due = db.Column(db.DateTime)
+    date_archived = db.Column(db.DateTime)
     done = db.Column(db.Boolean)
     archived = db.Column(db.Boolean)

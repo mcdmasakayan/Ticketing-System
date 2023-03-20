@@ -4,9 +4,10 @@ from controller.project import project_system
 from controller.task import task_system
 from controller.dashboard import dashboard_system
 from controller.settings import settings_system
+from middleware.process import delete_archived
 
 bp = Blueprint('bp', __name__)
-
+bp.before_request(delete_archived)
 bp.route('/dashboard/settings', methods=['GET', 'PATCH'])(settings_system)
 bp.route('/login', methods=['POST'])(login_system)
 bp.route('/dashboard', methods=['GET', 'POST', 'PATCH'])(dashboard_system)

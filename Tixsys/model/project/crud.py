@@ -6,6 +6,7 @@ from model.project.data import Project
 from model.task.data import Task
 from model.subtask.data import Subtask
 from middleware.session import check_session
+from datetime import datetime
 
 def create_project():
     user_id = check_session()
@@ -96,6 +97,7 @@ def archive_project(kwarg):
             task.archived = True
 
         project.archived = True
+        project.date_archived = datetime.utcnow()
         db.session.commit()
 
         return jsonify({'message':Message.project_archived})

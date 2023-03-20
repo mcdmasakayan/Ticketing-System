@@ -14,5 +14,6 @@ class Task(db.Model):
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     date_updated = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.now)
     date_due = db.Column(db.DateTime)
+    date_archived = db.Column(db.DateTime)
     archived = db.Column(db.Boolean)
     tasks = db.relationship(Subtask, backref='task')

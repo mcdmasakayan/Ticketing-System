@@ -13,6 +13,7 @@ class User(db.Model):
     last_name = db.Column(db.Text)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
     date_updated = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.now)
+    date_archived = db.Column(db.DateTime)
     verified = db.Column(db.Boolean)
     archived = db.Column(db.Boolean)
     projects = db.relationship(Project, backref='user') 
