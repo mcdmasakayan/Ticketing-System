@@ -38,7 +38,7 @@ def archive_user():
 
     return jsonify({'message':Message.user_not_archived})
 
-def logout_user(_):
+def quit_user():
     user_id = check_session()
 
     if not user_id:

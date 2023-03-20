@@ -32,7 +32,7 @@ def verify_user():
 
     return jsonify({'message':Message.access_not_granted})
 
-def register_user():
+def create_user():
     users = User.query.filter_by(archived=False).all()
     data = request.get_json()
 

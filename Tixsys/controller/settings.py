@@ -1,14 +1,12 @@
 from flask import request
-from model.settings.crud import archive_user, logout_user
+from model.settings.crud import archive_user, quit_user
 
-def settings_system(**kwargs):
-    user_request = request.get_json()
-    commands = {'archive_user':(archive_user, 'PATCH'),
-                'logout_user':(logout_user, 'PATCH')}
+def remove_project(**kwargs):
+    response = archive_user(kwargs)
 
-    if 'command' in user_request:
-        action, method = commands.get(user_request['command'], (None, None))
+    return response
 
-        if action and request.method == method:
-            return action(kwargs)
+def logout_user():
+    response = quit_user()
 
+    return response
