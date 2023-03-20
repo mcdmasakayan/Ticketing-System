@@ -13,8 +13,25 @@ def task_system(**kwargs):
                 'archive_subtask':(remove_subtask, 'PATCH'),
                 'complete_subtask':(complete_subtask, 'PATCH')}
 
-    if 'command' in user_request:
-        action, method = commands.get(user_request['command'], (None, None))
+def create_task(kwargs):
+    response = create_task (kwargs)
 
-        if action and request.method == method:
-            return action(kwargs)
+    return response
+
+def open_task(kwargs):
+    response = open_task(kwargs)
+
+    return response
+
+def archive_task(kwargs):
+    response = archive_task(kwargs)
+
+    return response
+
+def transfer_task(kwargs):
+    response = move_task(kwargs)
+
+    return response
+
+def modify_task(kwargs):
+    response = modify_task(kwargs)

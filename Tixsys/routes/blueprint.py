@@ -1,5 +1,5 @@
 from flask import Blueprint
-from controller.login import login_system
+from controller.login import login_user
 from controller.project import project_system
 from controller.task import task_system
 from controller.dashboard import dashboard_system
@@ -12,7 +12,7 @@ bp.route('dashboard/settings/archive_user', methods=['PATCH'])(archive_user)
 bp.route('dashboard/settings/logout', methods=['PATCH'])(logout_user)
 
 #login system
-bp.route('/login/login_user', methods=['POST'])(verify_user)
+bp.route('/login/login_user', methods=['POST'])(login_user)
 bp.route('/login/register_user', methods=['POST'])(register_user)
 
 #dashboard
@@ -38,3 +38,4 @@ bp.route('/dashboard/<string:project_name>/<string:task_name>/modify_task', meth
 bp.route('/dashboard/<string:project_name>/<string:task_name>/create_subtask', methods=['POST'])(new_subtask)
 bp.route('/dashboard/<string:project_name>/<string:task_name>/archive_task', methods=['PATCH'])(remove_subtask)
 bp.route('/dashboard/<string:project_name>/<string:task_name>/create_task', methods=['PATCH'])(complete_subtask)
+bp.r
