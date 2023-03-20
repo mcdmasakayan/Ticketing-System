@@ -68,7 +68,7 @@ def archive_subtask(kwarg):
 
     return jsonify({'message':Message.subtask_not_archived})
 
-def toggle_subtask(kwarg):
+def complete_subtask(kwarg):
     user_id = check_session()
 
     if not user_id:
