@@ -1,4 +1,3 @@
-from flask import request
 from model.settings.crud import cache_user, quit_user
 
 def archive_user(**kwargs):
