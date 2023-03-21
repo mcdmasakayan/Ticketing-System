@@ -1,21 +1,21 @@
-from model.subtask.crud import create_subtask, archive_subtask, complete_subtask, modify_subtask
+from model.subtask.crud import generate_subtask, cache_subtask, finish_subtask, edit_subtask
 
-def create_subtask(kwargs):
-    response = create_subtask(kwargs)
-
-    return response
-
-def archive_subtask(kwargs):
-    response = archive_subtask(kwargs)
+def create_subtask(**kwargs):
+    response = generate_subtask(kwargs)
 
     return response
 
-def complete_subtask(kwargs):
-    response = complete_subtask(kwargs)
+def archive_subtask(**kwargs):
+    response = cache_subtask(kwargs)
 
     return response
 
-def modify_subtask(kwargs):
-    response = modify_subtask(kwargs)
+def complete_subtask(**kwargs):
+    response = finish_subtask(kwargs)
+
+    return response
+
+def modify_subtask(**kwargs):
+    response = edit_subtask(kwargs)
 
     return response

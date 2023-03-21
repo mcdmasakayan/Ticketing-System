@@ -7,7 +7,7 @@ from model.task.data import Task
 from model.subtask.data import Subtask
 from middleware.session import check_session
 
-def create_task(kwarg):
+def generate_task(kwarg):
     user_id = check_session()
 
     if not user_id:
@@ -44,7 +44,7 @@ def create_task(kwarg):
 
     return jsonify({'message':Message.task_not_created})
 
-def open_task(kwarg):
+def show_task(kwarg):
     user_id = check_session()
 
     if not user_id:
@@ -69,7 +69,7 @@ def open_task(kwarg):
     
     return jsonify({'message':Message.task_not_opened})
 
-def archive_task(kwarg):
+def cache_task(kwarg):
     user_id = check_session()
 
     if not user_id:
@@ -93,7 +93,7 @@ def archive_task(kwarg):
 
     return jsonify({'message':Message.task_not_archived})
 
-def move_task(kwarg):
+def shift_task(kwarg):
     user_id = check_session()
 
     if not user_id:
@@ -113,7 +113,7 @@ def move_task(kwarg):
 
     return jsonify({'message':Message.task_not_moved})
 
-def modify_task(kwarg):
+def edit_task(kwarg):
     user_id = check_session()
 
     if not user_id:

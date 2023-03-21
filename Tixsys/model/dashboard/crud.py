@@ -4,7 +4,7 @@ from model.project.data import Project
 from model.task.data import Task
 from middleware.session import check_session
 
-def open_dashboard():
+def show_dashboard():
     dashboard_data = []
 
     user_id = check_session()

@@ -1,8 +1,8 @@
 from flask import request
-from model.settings.crud import archive_user, quit_user
+from model.settings.crud import cache_user, quit_user
 
-def remove_user(**kwargs):
-    response = archive_user(kwargs)
+def archive_user(**kwargs):
+    response = cache_user(kwargs)
 
     return response
 

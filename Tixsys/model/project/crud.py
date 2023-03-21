@@ -8,7 +8,7 @@ from model.subtask.data import Subtask
 from middleware.session import check_session
 from datetime import datetime
 
-def create_project():
+def generate_project():
     user_id = check_session()
 
     if not user_id:
@@ -39,7 +39,7 @@ def create_project():
 
     return jsonify({'message':Message.project_not_created})
 
-def open_project(kwarg):
+def show_project(kwarg):
     user_id = check_session()
 
     if not user_id:
@@ -75,7 +75,7 @@ def open_project(kwarg):
     
     return jsonify({'message':Message.project_not_opened})
     
-def archive_project(kwarg):
+def cache_project(kwarg):
     user_id = check_session()
 
     if not user_id:
@@ -104,7 +104,7 @@ def archive_project(kwarg):
 
     return jsonify({'message':Message.project_not_archived})
 
-def modify_project(kwarg):
+def edit_project(kwarg):
     user_id = check_session()
 
     if not user_id:

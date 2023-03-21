@@ -7,7 +7,7 @@ from model.project.data import Project
 from model.task.data import Task
 from model.subtask.data import Subtask
 
-def archive_user():
+def cache_user():
     user_id = check_session()
 
     if not user_id:
