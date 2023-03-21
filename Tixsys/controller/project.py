@@ -7,7 +7,7 @@ def create_project():
     return response
 
 def open_project(**kwargs):
-    response = redirect(url_for('/dashboard/<string:project_name>', kwargs))
+    response = redirect(url_for('bp.show_project', kwargs))
 
     return response
 

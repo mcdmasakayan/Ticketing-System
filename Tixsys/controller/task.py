@@ -7,7 +7,7 @@ def create_task(**kwargs):
     return response
 
 def open_task(**kwargs):
-    response = redirect(url_for('/dashboard/<string:project_name>/<string:task_name>', kwargs))
+    response = redirect(url_for('bp.show_task', kwargs))
 
     return response
 
