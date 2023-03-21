@@ -39,13 +39,13 @@ def generate_project():
 
     return jsonify({'message':Message.project_not_created})
 
-def show_project(kwarg):
+def view_project(project_name):
     user_id = check_session()
 
     if not user_id:
         return jsonify({'message':'User not logged in.'})
     
-    project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
+    project = Project.query.filter_by(user_id=user_id, name=project_name, archived=False).first()
     data = request.get_json()
 
     if 'project_id' in data and project:

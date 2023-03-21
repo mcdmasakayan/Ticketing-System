@@ -4,6 +4,3 @@ def open_dashboard():
     response = show_dashboard()
 
     return response
-    response = delete_project()
-
-    return response

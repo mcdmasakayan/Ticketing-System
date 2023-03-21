@@ -44,14 +44,14 @@ def generate_task(kwarg):
 
     return jsonify({'message':Message.task_not_created})
 
-def show_task(kwarg):
+def view_task(project_name, task_name):
     user_id = check_session()
 
     if not user_id:
         return jsonify({'message':Message.not_logged_in})
     
-    project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
-    task = Task.query.filter_by(project_id=project.public_id, name=kwarg['task_name'], archived=False).first()
+    project = Project.query.filter_by(user_id=user_id, name=project_name, archived=False).first()
+    task = Task.query.filter_by(project_id=project.public_id, name=task_name, archived=False).first()
     data = request.get_json()
 
     if 'project_id' in data and 'task_id' in data and project and task:
