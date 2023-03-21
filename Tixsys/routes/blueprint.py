@@ -17,7 +17,7 @@ bp.route('/login', methods=['POST'])(login_user)
 bp.route('/register', methods=['POST'])(register_user)
 
 #dashboard
-bp.route('/dashboard/open_dashboard', methods=['GET'])(open_dashboard)
+bp.route('/dashboard', methods=['GET'])(open_dashboard)
 bp.route('/dashboard/open_project', methods=['GET'])(open_project)
 bp.route('/dashboard/create_project', methods=['POST'])(create_project)
 bp.route('/dashboard/delete_project', methods=['PATCH'])(archive_project)
