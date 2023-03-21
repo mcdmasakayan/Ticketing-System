@@ -13,8 +13,8 @@ bp.route('dashboard/settings/delete_user', methods=['PATCH'])(archive_user)
 bp.route('dashboard/settings/logout', methods=['PATCH'])(logout_user)
 
 #login system
-bp.route('/login/login_user', methods=['POST'])(login_user)
-bp.route('/login/register_user', methods=['POST'])(register_user)
+bp.route('/login', methods=['POST'])(login_user)
+bp.route('/register', methods=['POST'])(register_user)
 
 #dashboard
 bp.route('/dashboard/open_dashboard', methods=['GET'])(open_dashboard)
