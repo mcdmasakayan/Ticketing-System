@@ -1,8 +1,8 @@
 from flask import redirect, url_for
 from model.project.crud import generate_project, show_project, cache_project, edit_project
 
-def create_project(**kwargs):
-    response = generate_project(kwargs)
+def create_project():
+    response = generate_project()
 
     return response
 

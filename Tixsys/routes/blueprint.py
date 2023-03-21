@@ -8,21 +8,21 @@ from controller.subtask import create_subtask, archive_subtask, modify_subtask, 
 
 bp = Blueprint('bp', __name__)
 
-#settings*
+#settings
 bp.route('dashboard/settings/delete_user', methods=['PATCH'])(archive_user)
 bp.route('dashboard/settings/logout', methods=['PATCH'])(logout_user)
 
-#login system*
+#login system
 bp.route('/login/login_user', methods=['POST'])(login_user)
 bp.route('/login/register_user', methods=['POST'])(register_user)
 
-#dashboard*
+#dashboard
 bp.route('/dashboard/open_dashboard', methods=['GET'])(open_dashboard)
 bp.route('/dashboard/open_project', methods=['GET'])(open_project)
 bp.route('/dashboard/create_project', methods=['POST'])(create_project)
 bp.route('/dashboard/delete_project', methods=['PATCH'])(archive_project)
 
-#project*
+#project
 bp.route('/dashboard/<string:project_name>', methods=['GET'])(show_project)
 bp.route('/dashboard/<string:project_name>/delete_project', methods=['PATCH'])(archive_project)
 bp.route('/dashboard/<string:project_name>/modify_project', methods=['PATCH'])(modify_project)
