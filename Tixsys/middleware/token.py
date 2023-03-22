@@ -1,37 +1,20 @@
 import jwt
-from flask import jsonify, request
-from datetime import datetime, timedelta
+from flask import session
 from config import SECRET_KEY
- 
-def check_token():
-    token = request.args.get('token')
-    data = jwt.decode(token, SECRET_KEY)
-    public_id = data['public_id']
+from model.variables import Message
 
-    return public_id
+def check_token():
+    if 'token' in session:
+        token = session.get('token')
+        decoded_token = jwt.decode(token, SECRET_KEY)
+    
+        return decoded_token['public_id']
+    
+    return Message.not_logged_in
 
 def add_token(public_id):
-    token = request.args.get('token')
-    data = jwt.decode(token, SECRET_KEY)
-    current_session_id = data['public_id']
-
-    if current_session_id:
-
-        if current_session_id != public_id:
-            token = jwt.encode({
-                'public_id': public_id,
-                'exp' : datetime.utcnow() + timedelta(minutes = 30)
-            }, SECRET_KEY) 
-            
-            return jsonify({'token' : token.decode('UTF-8')})
-        
-    else:
-        token = jwt.encode({
-            'public_id': public_id,
-            'exp' : datetime.utcnow() + timedelta(minutes = 30)
-        }, SECRET_KEY)
-        
-        return jsonify({'token' : token.decode('UTF-8')})
+    token = jwt.encode({'public_id':public_id}, key=SECRET_KEY)
+    session['token'] = token
 
 def clear_token():
-    pass
+    session.clear()

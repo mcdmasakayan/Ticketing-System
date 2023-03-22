@@ -4,11 +4,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from model.variables import Message
 from model.init_db import db
 from model.user.data import User
-#from middleware.session import check_session, add_to_session
 from middleware.token import check_token, add_token
 
 def verify_user():
-    #user_id = check_session()
     user_id = check_token()
     entry = ''
     users = User.query.filter_by(archived=False).all()
