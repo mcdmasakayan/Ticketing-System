@@ -4,10 +4,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from model.variables import Message
 from model.init_db import db
 from model.user.data import User
-from middleware.session import check_session, add_to_session
+#from middleware.session import check_session, add_to_session
+from middleware.token import check_token, add_token
 
 def verify_user():
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
     entry = ''
     users = User.query.filter_by(archived=False).all()
     data = request.get_json()
@@ -26,7 +28,7 @@ def verify_user():
                 elif ((data[entry] == getattr(user, entry)) and
                     (check_password_hash(user.password, data['password']))):
                     
-                    add_to_session(user.public_id)
+                    add_token(user.public_id)
 
                     return jsonify({'message':Message.access_granted})
 

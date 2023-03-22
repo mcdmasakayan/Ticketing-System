@@ -5,11 +5,13 @@ from model.init_db import db
 from model.project.data import Project
 from model.task.data import Task
 from model.subtask.data import Subtask
-from middleware.session import check_session
+#from middleware.session import check_session
+from middleware.token import check_token
 from datetime import datetime
 
 def generate_project():
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
 
     if not user_id:
         return jsonify({'message':Message.not_logged_in})
@@ -40,7 +42,8 @@ def generate_project():
     return jsonify({'message':Message.project_not_created})
 
 def view_project(project_name):
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
 
     if not user_id:
         return jsonify({'message':'User not logged in.'})
@@ -76,7 +79,8 @@ def view_project(project_name):
     return jsonify({'message':Message.project_not_opened})
     
 def cache_project(kwarg):
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
 
     if not user_id:
         return jsonify({'message':Message.not_logged_in})
@@ -105,7 +109,8 @@ def cache_project(kwarg):
     return jsonify({'message':Message.project_not_archived})
 
 def edit_project(kwarg):
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
 
     if not user_id:
         return jsonify({'message':Message.not_logged_in})

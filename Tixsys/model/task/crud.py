@@ -5,10 +5,12 @@ from model.init_db import db
 from model.project.data import Project
 from model.task.data import Task
 from model.subtask.data import Subtask
-from middleware.session import check_session
+#from middleware.session import check_session
+from middleware.token import check_token
 
 def generate_task(kwarg):
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
 
     if not user_id:
         return jsonify({'message':Message.not_logged_in})
@@ -45,7 +47,8 @@ def generate_task(kwarg):
     return jsonify({'message':Message.task_not_created})
 
 def view_task(project_name, task_name):
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
 
     if not user_id:
         return jsonify({'message':Message.not_logged_in})
@@ -70,7 +73,8 @@ def view_task(project_name, task_name):
     return jsonify({'message':Message.task_not_opened})
 
 def cache_task(kwarg):
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
 
     if not user_id:
         return jsonify({'message':Message.not_logged_in})
@@ -94,7 +98,8 @@ def cache_task(kwarg):
     return jsonify({'message':Message.task_not_archived})
 
 def shift_task(kwarg):
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
 
     if not user_id:
         return jsonify({'message':Message.not_logged_in})
@@ -114,8 +119,9 @@ def shift_task(kwarg):
     return jsonify({'message':Message.task_not_moved})
 
 def edit_task(kwarg):
-    user_id = check_session()
-
+    #user_id = check_session()
+    user_id = check_token()
+    
     if not user_id:
         return jsonify({'message':Message.not_logged_in})
     

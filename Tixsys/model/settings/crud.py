@@ -1,5 +1,6 @@
 from flask import request, jsonify
-from middleware.session import check_session, clear_session
+#from middleware.session import check_session, clear_session
+from middleware.token import check_token, clear_token
 from model.variables import Message
 from model.init_db import db
 from model.user.data import User
@@ -8,7 +9,8 @@ from model.task.data import Task
 from model.subtask.data import Subtask
 
 def cache_user():
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
 
     if not user_id:
         return jsonify({'message':Message.not_logged_in})
@@ -39,11 +41,13 @@ def cache_user():
     return jsonify({'message':Message.user_not_archived})
 
 def quit_user():
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
 
     if not user_id:
         return jsonify({'message':Message.already_logged_out})
     
-    clear_session()
+    #clear_session()
+    clear_token()
     
     return jsonify({'message':Message.logged_out})

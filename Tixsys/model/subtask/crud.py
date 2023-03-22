@@ -5,10 +5,12 @@ from model.init_db import db
 from model.project.data import Project
 from model.task.data import Task
 from model.subtask.data import Subtask
-from middleware.session import check_session
+#from middleware.session import check_session
+from middleware.token import check_token
 
 def generate_subtask(kwarg):
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
 
     if not user_id:
         return jsonify({'message':'User not logged in.'})
@@ -47,7 +49,8 @@ def generate_subtask(kwarg):
     return jsonify({'message':Message.subtask_not_created})
 
 def cache_subtask(kwarg):
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
 
     if not user_id:
         return jsonify({'message':Message.not_logged_in})
@@ -69,7 +72,8 @@ def cache_subtask(kwarg):
     return jsonify({'message':Message.subtask_not_archived})
 
 def finish_subtask(kwarg):
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
 
     if not user_id:
         return jsonify({'message':Message.not_logged_in})
@@ -91,7 +95,8 @@ def finish_subtask(kwarg):
     return jsonify({'message':Message.subtask_not_completed})
 
 def edit_subtask(kwarg):
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
 
     if not user_id:
         return jsonify({'message':Message.not_logged_in})

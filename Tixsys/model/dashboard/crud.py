@@ -2,12 +2,14 @@ from flask import jsonify
 from model.user.data import User
 from model.project.data import Project
 from model.task.data import Task
-from middleware.session import check_session
+#from middleware.session import check_session
+from middleware.token import check_token
 
 def show_dashboard():
     dashboard_data = []
 
-    user_id = check_session()
+    #user_id = check_session()
+    user_id = check_token()
 
     if not user_id:
         return jsonify({'message':'User not logged in.'})
