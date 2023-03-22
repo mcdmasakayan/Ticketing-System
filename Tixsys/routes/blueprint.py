@@ -1,5 +1,4 @@
 from flask import Blueprint
-from middleware.token import check_token
 from controller.settings import archive_user, logout_user
 from controller.login import login_user, register_user
 from controller.dashboard import open_dashboard
@@ -8,8 +7,6 @@ from controller.task import create_task, open_task, archive_task, move_task, mod
 from controller.subtask import create_subtask, archive_subtask, modify_subtask, complete_subtask
 
 bp = Blueprint('bp', __name__)
-
-bp.before_request(check_token)
 
 #settings
 bp.route('dashboard/settings/delete_user', methods=['PATCH'])(archive_user)
