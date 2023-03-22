@@ -63,7 +63,6 @@ def view_task(project_name, task_name):
         task_data = {'public_id':task.public_id,
                      'name':task.name,
                      'description':task.description,
-                     'date_due':task.date_due,
                      'subtasks':[{'public_id':subtask.public_id,
                                   'name':subtask.name,
                                   'description':subtask.description,
