@@ -13,7 +13,7 @@ def create_app():
     Session(app)
     CORS(app)
     
-    app.permanent_session_lifetime = timedelta(minutes=5)
+    app.permanent_session_lifetime = timedelta(hours=24)
     with app.test_request_context():
         db.init_app(app)
         
