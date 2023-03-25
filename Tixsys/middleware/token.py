@@ -13,7 +13,7 @@ def check_token():
             return decoded_token['public_id']
         
         return Message.not_logged_in
-
+    print(request.headers)
 def add_token(public_id):
     token = jwt.encode({'public_id':public_id}, key=SECRET_KEY)
     session['token'] = token
