@@ -1,15 +1,18 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sessionstore import Session
+from flask_jwt_extended import JWTManager
 from routes.blueprint import bp
 from model.init_db import db
-from flask_cors import CORS
+
 from datetime import timedelta
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object('config')
-
+ 
+    JWTManager(app)
     Session(app)
     CORS(app)
     

@@ -1,129 +1,67 @@
-from flask import request, jsonify
+from flask import jsonify
 from uuid import uuid4
-from model.variables import Message
 from model.init_db import db
 from model.project.data import Project
 from model.task.data import Task
 from model.subtask.data import Subtask
-#from middleware.session import check_session
-from middleware.token import check_token
 
-def generate_subtask(kwarg):
-    #user_id = check_session()
-    user_id = check_token()
+def save_subtask(project_name, task_name, data, get_opened_entity):
+    project = get_opened_entity(entity=Project, name=project_name, archived=False, select='first')
+    task = get_opened_entity(entity=Task, name=task_name, archived=False, select='first')
+    subtask = get_opened_entity(entity=Subtask, name=data['name'], archived=False, select='first')
 
-    if not user_id:
-        return jsonify({'message':'User not logged in.'})
+    if not project and not task:
+        return jsonify({'message':f'Project {project_name} and/or Task {task_name} does not exist.'})
     
-    project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
-    task = Task.query.filter_by(project_id=project.public_id, name=kwarg['task_name'], archived=False).first()
-
-    data = request.get_json()
+    if subtask:
+        return jsonify({'message':f'Subtask {subtask.name} already exists.'})
     
-    if 'task_id' in data and 'project_id' in data and project and task:
-        task = Task.query.filter_by(public_id=data['task_id'], project_id=data['project_id'], archived=False).first()
-        description = ''
-
-        if 'name' in data:
-            subtask = Subtask.query.filter_by(task_id=task.public_id, name=data['name'], archived=False).first()
-            
-            if subtask:
-                return jsonify({'message':Message.subtask_exists})
-            
-            if 'description' in data:
-                description = data['description']
-
-            subtask = Subtask(public_id=str(uuid4()),
-                        task_id=task.public_id,
-                        name=data['name'],
-                        description=description,
-                        priority_level=0,
-                        done=False,
-                        archived=False)
-        
-            db.session.add(subtask)
-            db.session.commit()
-
-            return jsonify({'message':Message.subtask_created})
-
-    return jsonify({'message':Message.subtask_not_created})
-
-def cache_subtask(kwarg):
-    #user_id = check_session()
-    user_id = check_token()
-
-    if not user_id:
-        return jsonify({'message':Message.not_logged_in})
+    subtask = Subtask(public_id=str(uuid4()), task_id=task.public_id, name=data['name'], description=data['description'])
     
-    project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
-    task = Task.query.filter_by(project_id=project.public_id, name=kwarg['task_name'], archived=False).first()
+    db.session.add(subtask)
+    db.session.commit()
 
-    data = request.get_json()
+    return jsonify({'message':f'Subtask {subtask.name} saved.'})
 
-    if 'subtask_id' in data and 'task_id' in data and 'project_id' in data and project and task:
-        task = Task.query.filter_by(public_id=data['task_id'], project_id=data['project_id'], archived=False).first()
-        subtask = Subtask.query.filter_by(public_id=data['subtask_id'], task_id=task.public_id, archived=False).first()
-        
-        subtask.archived = True
-        db.session.commit()
+def edit_subtask(project_name, task_name, data, get_opened_entity, change_entity_values):
+    project = get_opened_entity(entity=Project, name=project_name, archived=False, select='first')
+    task = get_opened_entity(entity=Task, name=task_name, archived=False, select='first')
+    subtask = get_opened_entity(entity=Subtask, public_id=data['public_id'], task_id=task.public_id, archived=False, select='first')
 
-        return jsonify({'message':Message.subtask_archived})
+    if not project and not task:
+        return jsonify({'message':f'Task {task_name} does not exist.'})
 
-    return jsonify({'message':Message.subtask_not_archived})
-
-def finish_subtask(kwarg):
-    #user_id = check_session()
-    user_id = check_token()
-
-    if not user_id:
-        return jsonify({'message':Message.not_logged_in})
+    modified = change_entity_values(entity=subtask, data=data)
     
-    project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
-    task = Task.query.filter_by(project_id=project.public_id, name=kwarg['task_name'], archived=False).first()
-
-    data = request.get_json()
-
-    if 'subtask_id' in data and 'task_id' in data and 'project_id' in data and project and task:
-        task = Task.query.filter_by(public_id=data['task_id'], project_id=data['project_id'], archived=False).first()
-        subtask = Subtask.query.filter_by(public_id=data['subtask_id'], task_id=task.public_id, archived=False).first()
-        
-        subtask.done = not subtask.done
-        db.session.commit()
-
-        return jsonify({'message':Message.subtask_completed})
-
-    return jsonify({'message':Message.subtask_not_completed})
-
-def edit_subtask(kwarg):
-    #user_id = check_session()
-    user_id = check_token()
-
-    if not user_id:
-        return jsonify({'message':Message.not_logged_in})
+    if modified:
+        return jsonify({'message':f'Subtask {subtask.name} modified.'})
     
-    project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
-    task = Task.query.filter_by(project_id=project.public_id, name=kwarg['task_name'], archived=False).first()
+    return jsonify({'message':f'Subtask {subtask.name} not modified.'})
+    
+def dump_subtask(project_name, task_name, data, get_opened_entity):
+    project = get_opened_entity(entity=Project, name=project_name, archived=False, select='first')
+    task = get_opened_entity(entity=Task, name=task_name, archived=False, select='first')
+    subtask = get_opened_entity(entity=Subtask, public_id=data['public_id'], task_id=task.public_id,
+                                archived=False, select='first')
+    
+    if not project and not task and not subtask:
+        return jsonify({'message':'Subtask does not exist.'})
+    
+    subtask.archived = True
+    db.session.commit()
 
-    data = request.get_json()
+    return jsonify({'message':f'Subtask {subtask.name} archived.'})
 
-    if 'subtask_id' in data and 'task_id' in data and 'project_id' in data and project and task:
-        task = Task.query.filter_by(public_id=data['task_id'], project_id=data['project_id'], archived=False).first()
-        subtask = Subtask.query.filter_by(public_id=data['subtask_id'], task_id=task.public_id, archived=False).first()
-        
-        if 'name' in data and data['name']:
-            subtask.name = data['name']
+def mark_subtask(project_name, task_name, data, get_opened_entity):
+    project = get_opened_entity(entity=Project, name=project_name, archived=False, select='first')
+    task = get_opened_entity(entity=Task, name=task_name, archived=False, select='first')
+    subtask = get_opened_entity(entity=Subtask, public_id=data['public_id'], task_id=task.public_id,
+                                archived=False, select='first')
+    
+    if not project and not task and not subtask:
+        return jsonify({'message':'Subtask does not exist.'})
+    
+    subtask.done = not subtask.done
+    db.session.commit()
 
-        if 'description' in data:
-            subtask.description = data['description']
-
-        if 'priority_level' in data and data['priority_level'] > 0 and data['priority_level'] < 1:
-            subtask.priority_level = data['priority_level']
-
-        if 'date_due' in data:
-            subtask.date_due = data['date_due']
-            
-        db.session.commit()
-
-        return jsonify({'message':Message.subtask_archived})
-
-    return jsonify({'message':Message.subtask_not_archived})
+    return jsonify({'message':f'Subtask {subtask.name} {"completed" if subtask.done else "undo completed"}.'})

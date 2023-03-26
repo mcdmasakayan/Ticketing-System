@@ -1,145 +1,91 @@
-from flask import request, jsonify
+from flask import jsonify
 from uuid import uuid4
-from model.variables import Message, progress_list
 from model.init_db import db
 from model.project.data import Project
 from model.task.data import Task
 from model.subtask.data import Subtask
-from middleware.token import check_token
 
-def generate_task(kwarg):
-    user_id = check_token()
+def save_task(project_name, data, get_opened_entity):
+    project = get_opened_entity(entity=Project, name=project_name, archived=False, select='first')
+    task = get_opened_entity(entity=Task, name=data['name'], archived=False, select='first')
 
-    if not user_id:
-        return jsonify({'message':Message.not_logged_in})
+    if not project:
+        return jsonify({'message':f'Project {project_name} does not exist.'})
     
-    project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
-    data = request.get_json()
+    if task:
+        return jsonify({'message':f'Task {task.name} already exists.'})
     
-    if 'project_id' in data and project:
-        project = Project.query.filter_by(public_id=data['project_id'], user_id=user_id, archived=False).first()
-        description = ''
-
-        if 'name' in data:
-            task = Task.query.filter_by(project_id=project.public_id, name=data['name'], archived=False).first()
-
-            if task:
-                return jsonify({'message':Message.task_exists})
-            
-            if 'description' in data:
-                description = data['description']
-
-            task = Task(public_id=str(uuid4()),
-                        project_id=project.public_id,
-                        name=data['name'],
-                        description=description,
-                        priority_level=0,
-                        progress='In Progress',
-                        archived=False)
-        
-            db.session.add(task)
-            db.session.commit()
-
-            return jsonify({'message':Message.task_created})
-
-    return jsonify({'message':Message.task_not_created})
-
-def view_task(project_name, task_name):
-    user_id = check_token()
-
-    if not user_id:
-        return jsonify({'message':Message.not_logged_in})
+    task = Task(public_id=str(uuid4()), project_id=project.public_id, name=data['name'], description=data['description'])
     
-    project = Project.query.filter_by(user_id=user_id, name=project_name, archived=False).first()
-    task = Task.query.filter_by(project_id=project.public_id, name=task_name, archived=False).first()
-    data = request.get_json()
+    db.session.add(task)
+    db.session.commit()
 
-    if 'project_id' in data and 'task_id' in data and project and task:
-        subtasks = Subtask.query.filter_by(task_id=data['task_id'], archived=False).all()
+    return jsonify({'message':f'Task {task.name} saved.'})
 
-        task_data = {'public_id':task.public_id,
-                     'name':task.name,
-                     'description':task.description,
-                     'subtasks':[{'public_id':subtask.public_id,
-                                  'name':subtask.name,
-                                  'description':subtask.description,
-                                  'done':subtask.done} for subtask in subtasks]}
-        
-        return jsonify({'task_data':task_data})
+def view_task(project_name, task_name, data, get_opened_entity):
+    project = get_opened_entity(entity=Project, name=project_name, archived=False, select='first')
+    task = get_opened_entity(entity=Task, project_id=project.public_id, public_id=data['public_id'],
+                             name=task_name, archived=False, select='first')
+
+    if not project and not task:
+        return jsonify({'message':f'Task {task_name} does not exist.'})
     
-    return jsonify({'message':Message.task_not_opened})
 
-def cache_task(kwarg):
-    user_id = check_token()
+    subtasks = get_opened_entity(entity=Subtask, task_id=task.public_id, archived=False, select='all')
 
-    if not user_id:
-        return jsonify({'message':Message.not_logged_in})
+    task_data = {'name':task.name,
+                 'description':task.description,
+                 'progress':task.progress,
+                 'date_created':task.date_created,
+                 'date_due':task.date_due,
+                 'subtasks':[{'public_id':subtask.public_id,
+                             'name':subtask.name,
+                             'done':subtask.done}
+                             for subtask in subtasks]}
     
-    project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
-    task = Task.query.filter_by(project_id=project.public_id, name=kwarg['task_name'], archived=False).first()
-    data = request.get_json()
+    return jsonify({'task_data':task_data})
 
-    if 'project_id' in data and 'task_id' in data and project and task:
-        task = Task.query.filter_by(public_id=data['task_id'], project_id=data['project_id'], archived=False).first()
-        subtasks = Subtask.query.filter_by(task_id=task.public_id, archived=False).all()
-        
-        for subtask in subtasks:
-            subtask.archived = True
+def edit_task(project_name, task_name, data, get_opened_entity, change_entity_values):
+    project = get_opened_entity(entity=Project, name=project_name, archived=False, select='first')
+    task = get_opened_entity(entity=Task, public_id=data['public_id'], project_id=project.public_id,
+                             name=task_name, archived=False, select='first')
 
-        task.archived = True
-        db.session.commit()
-
-        return jsonify({'message':Message.task_archived})
-
-    return jsonify({'message':Message.task_not_archived})
-
-def shift_task(kwarg):
-    user_id = check_token()
-
-    if not user_id:
-        return jsonify({'message':Message.not_logged_in})
+    if not project and not task:
+        return jsonify({'message':f'Task {task_name} does not exist.'})
     
-    project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
-    data = request.get_json()
-
-    if 'project_id' in data and 'task_id' in data and 'progress' in data and project:
-        task = Task.query.filter_by(public_id=data['task_id'], project_id=project.public_id, archived=False).first()
-
-        if data['progress'] in progress_list:
-            task.progress = data['progress']
-            db.session.commit()
-
-            return jsonify({'message':Message.task_moved})
-
-    return jsonify({'message':Message.task_not_moved})
-
-def edit_task(kwarg):
-    user_id = check_token()
+    modified = change_entity_values(entity=task, data=data)
     
-    if not user_id:
-        return jsonify({'message':Message.not_logged_in})
+    if modified:
+        return jsonify({'message':f'Task {task.name} modified.'})
     
-    project = Project.query.filter_by(user_id=user_id, name=kwarg['project_name'], archived=False).first()
-    task = Task.query.filter_by(project_id=project.public_id, name=kwarg['task_name'], archived=False).first()
-    data = request.get_json()
+    return jsonify({'message':f'Task {task.name} not modified.'})
+    
+def transfer_task(project_name, task_name, data, get_opened_entity):
+    progress_list = {1:"In Progress", 2:"Testing", 3:"Revision", 4:"Deployment"}
 
-    if 'project_id' in data and 'task_id' in data and project and task:
-        task = Task.query.filter_by(public_id=data['task_id'], project_id=data['project_id'], archived=False).first()
-        
-        if 'name' in data:
-            task.name = data['name']
-        
-        if 'description' in data:
-            task.description = data['name']
+    project = get_opened_entity(entity=Project, name=project_name, archived=False, select='first')
+    task = get_opened_entity(entity=Task, public_id=data['task_id'], name=task_name, archived=False, select='first')
 
-        if 'priority_level' in data and data['priority_level'] > 0 and data['priority_level'] < 1:
-            task.priority_level = data['priority_level']
-        
-        if 'date_due' in data:
-            task.date_due = data['date_due']
+    if not project and not task:
+        return jsonify({'message':f'Task {task_name} does not exist.'})
+    
+    task.progress = progress_list[data['progress']]
+    db.session.commit()
 
-        db.session.commit()
+    return jsonify({'message':f'Task {task.name} moved.'})
 
-        return jsonify({'message':Message.task_modified})
+def dump_task(project_name, task_name, data, get_opened_entity):
+    project = get_opened_entity(entity=Project, name=project_name, archived=False, select='first')
+    task = get_opened_entity(entity=Task, public_id=data['task_id'], name=task_name, archived=False, select='first')
+    subtasks = get_opened_entity(entity=Subtask, task_id=task.public_id, archived=False, select='all')
+    
+    if not project and not task:
+        return jsonify({'message':f'Task {task_name} does not exist.'})
 
-    return jsonify({'message':Message.task_not_modified})
+    for subtask in subtasks:
+        subtask.archived = True
+
+    task.archived = True
+    db.session.commit()
+
+    return jsonify({'message':f'Task {task.name} archived.'})

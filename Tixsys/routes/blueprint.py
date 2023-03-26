@@ -1,42 +1,42 @@
 from flask import Blueprint
-from controller.settings import archive_user, logout_user
-from controller.login import login_user, register_user
-from controller.dashboard import open_dashboard
-from controller.project import create_project, open_project, archive_project, modify_project, show_project
-from controller.task import create_task, open_task, archive_task, move_task, modify_task, show_task
-from controller.subtask import create_subtask, archive_subtask, modify_subtask, complete_subtask
+from controller.login import LoginController
+from controller.dashboard import DashboardController
+from controller.settings import SettingsController
+from controller.project import ProjectController
+from controller.task import TaskController
+from controller.subtask import SubtaskController
+from middleware.token import verify_bearer
 
 bp = Blueprint('bp', __name__)
 
-#settings
-bp.route('dashboard/settings/delete_user', methods=['PATCH'])(archive_user)
-bp.route('dashboard/settings/logout', methods=['PATCH'])(logout_user)
+bp.before_app_request(verify_bearer)
 
-#login system
-bp.route('/login', methods=['POST'])(login_user)
-bp.route('/register', methods=['POST'])(register_user)
+#Login System
+bp.route('/login', methods=['POST'])(LoginController().login_user)
+bp.route('/register', methods=['POST'])(LoginController().register_user)
 
-#dashboard
-bp.route('/dashboard', methods=['GET'])(open_dashboard)
-bp.route('/dashboard/open-project', methods=['GET'])(open_project)
-bp.route('/dashboard/create-project', methods=['POST'])(create_project)
-bp.route('/dashboard/delete-project', methods=['PATCH'])(archive_project)
+#Dashboard System
+bp.route('/dashboard', methods=['GET'])(DashboardController().open_dashboard)
+bp.route('/dashboard/create-project', methods=['POST'])(ProjectController().create_project)
+bp.route('/dashboard/open-project', methods=['GET'])(ProjectController().open_project)
 
-#project
-bp.route('/dashboard/<string:project_name>', methods=['GET'])(show_project)
-bp.route('/dashboard/<string:project_name>/delete-project', methods=['PATCH'])(archive_project)
-bp.route('/dashboard/<string:project_name>/modify-project', methods=['PATCH'])(modify_project)
-bp.route('/dashboard/<string:project_name>/open-task', methods=['GET'])(open_task)
-bp.route('/dashboard/<string:project_name>/create-task', methods=['POST'])(create_task)
-bp.route('/dashboard/<string:project_name>/delete-task', methods=['PATCH'])(archive_task)
-bp.route('/dashboard/<string:project_name>/move-task', methods=['PATCH'])(move_task)
+#Settings System
+bp.route('/dashboard/settings/logout', methods=['POST'])(SettingsController().logout_user)
+bp.route('/dashboard/settings/delete-user', methods=['PATCH'])(SettingsController().archive_user)
 
-#task
-bp.route('/dashboard/<string:project_name>/<string:task_name>', methods=['GET'])(show_task)
-bp.route('/dashboard/<string:project_name>/<string:task_name>/delete_task', methods=['PATCH'])(archive_task)
-bp.route('/dashboard/<string:project_name>/<string:task_name>/transfer_task', methods=['PATCH'])(move_task)
-bp.route('/dashboard/<string:project_name>/<string:task_name>/modify_task', methods=['PATCH'])(modify_task)
-bp.route('/dashboard/<string:project_name>/<string:task_name>/create_subtask', methods=['POST'])(create_subtask)
-bp.route('/dashboard/<string:project_name>/<string:task_name>/delete_subtask', methods=['PATCH'])(archive_subtask)
-bp.route('/dashboard/<string:project_name>/<string:task_name>/modify_subtask', methods=['PATCH'])(modify_subtask)
-bp.route('/dashboard/<string:project_name>/<string:task_name>/complete_subtask', methods=['PATCH'])(complete_subtask)
+#Project System
+bp.route('/dashboard/<string:project_name>', methods=['GET'])(ProjectController().show_project_data)
+bp.route('/dashboard/<string:project_name>/modify-project', methods=['PATCH'])(ProjectController().modify_project)
+bp.route('/dashboard/<string:project_name>/delete-project', methods=['PATCH'])(ProjectController().archive_project)
+bp.route('/dashboard/<string:project_name>/open-task', methods=['GET'])(TaskController().open_task)
+bp.route('/dashboard/<string:project_name>/create-task', methods=['POST'])(TaskController().create_task)
+bp.route('/dashboard/<string:project_name>/move-task', methods=['PATCH'])(TaskController().move_task)
+
+#Task System
+bp.route('/dashboard/<string:project_name>/<string:task_name>', methods=['GET'])(TaskController().show_task_data)
+bp.route('/dashboard/<string:project_name>/<string:task_name>/delete-task', methods=['PATCH'])(TaskController().archive_task)
+bp.route('/dashboard/<string:project_name>/<string:task_name>/modify-task', methods=['PATCH'])(TaskController().modify_task)
+bp.route('/dashboard/<string:project_name>/<string:task_name>/create-subtask', methods=['POST'])(SubtaskController().create_subtask)
+bp.route('/dashboard/<string:project_name>/<string:task_name>/delete-subtask', methods=['PATCH'])(SubtaskController().archive_subtask)
+bp.route('/dashboard/<string:project_name>/<string:task_name>/modify-subtask', methods=['PATCH'])(SubtaskController().modify_subtask)
+bp.route('/dashboard/<string:project_name>/<string:task_name>/complete-subtask', methods=['PATCH'])(SubtaskController().complete_subtask)
