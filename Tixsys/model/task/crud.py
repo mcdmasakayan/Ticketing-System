@@ -10,17 +10,20 @@ def save_task(project_name, data, get_opened_entity):
     task = get_opened_entity(entity=Task, name=data['name'], archived=False, select='first')
 
     if not project:
-        return jsonify({'message':f'Project {project_name} does not exist.'})
+        return jsonify({'status':0,
+                        'message':f'Project {project_name} does not exist.'})
     
     if task:
-        return jsonify({'message':f'Task {task.name} already exists.'})
+        return jsonify({'status':0,
+                        'message':f'Task {task.name} already exists.'})
     
     task = Task(public_id=str(uuid4()), project_id=project.public_id, name=data['name'], description=data['description'])
     
     db.session.add(task)
     db.session.commit()
 
-    return jsonify({'message':f'Task {task.name} saved.'})
+    return jsonify({'status':1,
+                    'message':f'Task {task.name} saved.'})
 
 def view_task(project_name, task_name, data, get_opened_entity):
     project = get_opened_entity(entity=Project, name=project_name, archived=False, select='first')
