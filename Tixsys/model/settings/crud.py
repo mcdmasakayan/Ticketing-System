@@ -16,7 +16,8 @@ def dump_user(identity, get_opened_entity):
     subtasks = get_opened_entity(entity=Subtask, archived=False, join=Task.subtasks, select='join')
 
     if not user:
-        return jsonify({'message':'User does not exist.'})
+        return jsonify({'status':0,
+                        'message':'User does not exist.'})
     
     for project in projects:
         for task in tasks.filter_by(project.public_id):
@@ -30,4 +31,5 @@ def dump_user(identity, get_opened_entity):
     user.archived = True
     db.session.commit()
 
-    return jsonify({'message':f'User {user.username} archived.'})
+    return jsonify({'status':1,
+                    'message':f'User {user.username} archived.'})

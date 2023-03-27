@@ -16,7 +16,8 @@ def verify_user(data, get_opened_entity):
 
         return jsonify({'access_token':access_token})
     
-    return jsonify({'message':'Username or Password is invalid.'})
+    return jsonify({'status':0,
+                    'message':'Username or Password is invalid.'})
     
     
 
@@ -27,7 +28,8 @@ def save_user(data, get_opened_entity):
         exist = get_opened_entity(entity=User, username=data['username'], archived=False, select='first')
 
     if exist:
-        return jsonify({'message':'Email or Username invalid.'})
+        return jsonify({'status':0,
+                        'message':'Email or Username invalid.'})
     
     user = User(public_id=str(uuid4()), email=data['email'], username=data['username'], password=data['password'],
                 first_name=data['first_name'], last_name=data['last_name'])
@@ -35,4 +37,5 @@ def save_user(data, get_opened_entity):
     db.session.add(user)
     db.session.commit()
 
-    return jsonify({'message':f'{user.first_name} {user.last_name} registered as {user.username}.'})
+    return jsonify({'status':1,
+                    'message':f'{user.first_name} {user.last_name} registered as {user.username}.'})
