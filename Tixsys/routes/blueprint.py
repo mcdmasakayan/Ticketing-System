@@ -23,6 +23,7 @@ bp.route('/dashboard/open-project', methods=['GET'])(ProjectController().open_pr
 #Settings System
 bp.route('/dashboard/settings/logout', methods=['POST'])(SettingsController().logout_user)
 bp.route('/dashboard/settings/delete-user', methods=['PATCH'])(SettingsController().archive_user)
+bp.route('/dashboard/settings/verify-user', methods=['PATCH'])(SettingsController().verify_user)
 
 #Project System
 bp.route('/dashboard/<string:project_name>', methods=['GET'])(ProjectController().show_project_data)

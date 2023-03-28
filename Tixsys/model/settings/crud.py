@@ -1,4 +1,5 @@
 from flask import jsonify
+from middleware.token import revoke_access
 from model.init_db import db
 from model.user.data import User
 from model.project.data import Project
@@ -6,8 +7,13 @@ from model.task.data import Task
 from model.subtask.data import Subtask
 
 def revoke_user():
-    #Next Update
-    return jsonify({'message':'Logout feature will be in the next update.'})
+    blacklisted = revoke_access()
+
+    if not blacklisted:
+        return jsonify({'status':0,
+                        'message':'User is not currently logged in.'})
+    
+    return jsonify({'message':'User logged out successfully.'})
 
 def dump_user(identity, get_opened_entity):
     user = get_opened_entity(entity=User, public_id=identity, archived=False, select='first')
@@ -33,3 +39,16 @@ def dump_user(identity, get_opened_entity):
 
     return jsonify({'status':1,
                     'message':f'User {user.username} archived.'})
+
+def validate_user(identity, get_opened_entity):
+    user = get_opened_entity(entity=User, public_id=identity, archived=False, select='first')
+
+    if not user:
+        return jsonify({'status':0,
+                        'message':'User does not exist.'})
+    
+    user.verified = True
+    db.session.commit()
+
+    return jsonify({'status':1,
+                    'message':f'User {user.username} has been verified.'})
