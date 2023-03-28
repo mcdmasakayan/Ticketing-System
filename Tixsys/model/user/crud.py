@@ -1,5 +1,5 @@
 from flask import jsonify
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, create_refresh_token
 from uuid import uuid4
 from werkzeug.security import check_password_hash
 from model.init_db import db
@@ -13,8 +13,10 @@ def verify_user(data, get_opened_entity):
 
     if user and check_password_hash(user.password, data['password']):
         access_token = create_access_token(identity=user.public_id)
+        refresh_token = create_refresh_token(identity=user.public_id)
 
-        return jsonify({'access_token':access_token})
+        return jsonify({'access_token':access_token,
+                        'refresh_token':refresh_token})
     
     return jsonify({'status':0,
                     'message':'Username or Password is invalid.'})
