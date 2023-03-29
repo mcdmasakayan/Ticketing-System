@@ -1,5 +1,5 @@
 import os
-from model.init_db import db, url
+from model.init_db import url
 from datetime import timedelta
 
 
