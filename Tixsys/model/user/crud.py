@@ -13,12 +13,11 @@ def authenticate_user(data, get_opened_entity):
 
     if user and check_password_hash(user.password, data['password']):
         access_token = create_access_token(identity=user.public_id)
-        refresh_token = create_refresh_token(identity=user.public_id)
 
-        response = jsonify({'access_token':access_token})
+        response = jsonify({'status':1,
+                            'access_token':access_token})
 
         set_access_cookies(response, access_token)
-        set_refresh_cookies(response, refresh_token)
 
         return response
         

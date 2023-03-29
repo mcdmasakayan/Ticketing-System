@@ -76,3 +76,7 @@ class Controller():
                     return True
                 
         return False
+    
+    def dispose_data(self):
+
+        print("aw")
