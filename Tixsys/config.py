@@ -22,3 +22,5 @@ JWT_TOKEN_LOCATION = 'cookies'
 JWT_SECRET_KEY = 'hirayamnl'
 
 JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=30)
+
+JWT_COOKIE_CSRF_PROTECT = False
