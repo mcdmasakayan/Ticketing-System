@@ -1,12 +1,18 @@
 from flask import request, jsonify
-from flask_jwt_extended import create_access_token, verify_jwt_in_request, jwt_required, get_csrf_token
+from flask_jwt_extended import create_access_token, verify_jwt_in_request, jwt_required, get_jti
 from flask_jwt_extended import set_access_cookies, unset_access_cookies, get_jwt, get_jwt_identity
 from datetime import datetime, timedelta, timezone
+
+blacklist = set()
 
 def verify_bearer():
     if request.endpoint not in ('bp.login_user', 'bp.register_user'):
         jwt_required()
         verify_jwt_in_request()
+
+        if get_jwt()['jti'] in blacklist:
+            return jsonify({'status': 0,
+                            'message':'Token is not valid.'})
 
 def refresh_access(response):
     if request.endpoint not in ('bp.login_user', 'bp.register_user', 'bp.logout_user'):
@@ -29,6 +35,8 @@ def refresh_access(response):
     return response
 
 def revoke_access():
+    blacklist.add(get_jwt()['jti'])
+
     response = jsonify({'status':1,
                         'message':'User logged out.'})
     unset_access_cookies(response)

@@ -10,7 +10,7 @@ from middleware.token import verify_bearer, refresh_access
 bp = Blueprint('bp', __name__)
 
 bp.before_app_request(verify_bearer)
-bp.after_app_request(refresh_access)
+#bp.after_app_request(refresh_access)
 
 #Login System
 bp.route('/login', methods=['POST'])(LoginController().login_user)
