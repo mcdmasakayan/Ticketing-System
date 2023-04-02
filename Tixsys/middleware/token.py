@@ -6,7 +6,6 @@ from datetime import datetime, timedelta, timezone
 blacklist = []
 
 def verify_bearer():
-    print(request.endpoint)
     if request.endpoint not in ('bp.login_user', 'bp.register_user', 'bp.google_login',
                                 'bp.facebook_login', 'bp.slack_login'):
         jwt_required()
@@ -18,7 +17,6 @@ def verify_bearer():
                                 'message':'Token is not valid.'})
 
 def refresh_access(response):
-    print(request.endpoint)
     if request.endpoint not in ('bp.login_user', 'bp.register_user', 'bp.logout_user',
                                 'bp.google_login', 'bp.facebook_login', 'bp.slack_login'):
         try:
