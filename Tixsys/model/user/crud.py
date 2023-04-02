@@ -75,5 +75,9 @@ def social_media_authenticate(platform, get_opened_identity):
     user.verified = True
     db.session.commit()
 
+    access_token = create_access_token(identity=user.public_id)
+    set_access_cookies(response, access_token)
+
     return jsonify({'status': 1,
-                    'message': f'Email {user.email} successfully verified.'})
+                    'message': f'Email {user.email} successfully verified.',
+                    'access_token':access_token})
