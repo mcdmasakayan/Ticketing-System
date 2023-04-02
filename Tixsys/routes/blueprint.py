@@ -5,12 +5,13 @@ from controller.settings import SettingsController
 from controller.project import ProjectController
 from controller.task import TaskController
 from controller.subtask import SubtaskController
-from middleware.token import verify_bearer, refresh_access
+from middleware.token import verify_bearer, refresh_access, delete_expired_token
 
 bp = Blueprint('bp', __name__)
 
 bp.before_app_request(verify_bearer)
-#bp.after_app_request(refresh_access)
+bp.before_app_request(delete_expired_token)
+bp.after_app_request(refresh_access)
 
 #Login System
 bp.route('/login', methods=['POST'])(LoginController().login_user)

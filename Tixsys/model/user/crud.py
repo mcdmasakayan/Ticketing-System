@@ -1,5 +1,5 @@
 from flask import jsonify
-from flask_jwt_extended import create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies
+from flask_jwt_extended import create_access_token, set_access_cookies
 from uuid import uuid4
 from werkzeug.security import check_password_hash
 from model.init_db import db
