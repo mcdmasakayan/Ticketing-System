@@ -1,5 +1,8 @@
 from flask import jsonify
 from flask_jwt_extended import create_access_token, set_access_cookies
+from flask_dance.contrib.google import google
+from flask_dance.contrib.facebook import facebook
+from flask_dance.contrib.slack import slack
 from uuid import uuid4
 from werkzeug.security import check_password_hash
 from model.init_db import db
@@ -45,3 +48,32 @@ def save_user(data, get_opened_entity):
 
     return jsonify({'status':1,
                     'message':f'{user.first_name} {user.last_name} registered as {user.username}.'})
+
+def social_media_authenticate(platform, get_opened_identity):
+    info = {'google':(google, '/oauth2/v2/userinfo', 'email'),
+            'facebook':(facebook, '/me?fields=id,name,email', 'email'),
+            'slack':(slack, '/api/users.identity', ('user', 'email'))}
+
+    platform_object, endpoint, email_args = info[platform]
+
+    if not platform_object.authorized:
+        return jsonify({'status': 0,
+                        'message': f'{platform.title()} account does not exist.'})
+
+    response = platform_object.get(endpoint)
+
+    user = get_opened_identity(entity=User, email=response.json()[email_args], select='first')
+
+    if not user:
+        return jsonify({'status': 0,
+                        'message': 'Email does not exist in the database.'})
+    
+    if user.verified:
+        return jsonify({'status': 0,
+                        'message': 'User is already verified.'})
+    
+    user.verified = True
+    db.session.commit()
+
+    return jsonify({'status': 1,
+                    'message': f'Email {user.email} successfully verified.'})

@@ -2,8 +2,9 @@ import os
 from model.init_db import url
 from datetime import timedelta
 
-
 SECRET_KEY = 'hirayamnl'
+
+BLUEPRINT_URL_PREFIX = '/tixsys'
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 

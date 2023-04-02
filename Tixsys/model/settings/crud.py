@@ -39,16 +39,3 @@ def dump_user(identity, get_opened_entity):
 
     return jsonify({'status':1,
                     'message':f'User {user.username} archived.'})
-
-def validate_user(identity, get_opened_entity):
-    user = get_opened_entity(entity=User, public_id=identity, archived=False, select='first')
-
-    if not user:
-        return jsonify({'status':0,
-                        'message':'User does not exist.'})
-    
-    user.verified = True
-    db.session.commit()
-
-    return jsonify({'status':1,
-                    'message':f'User {user.username} has been verified.'})

@@ -1,6 +1,6 @@
 from flask import Flask
 from extensions import migrate, jwt
-from routes.blueprint import bp
+from routes.blueprint import bp, google_bp, facebook_bp, slack_bp
 from model.init_db import db
 
 def create_app():
@@ -18,7 +18,10 @@ def create_app():
     return app
 
 app = create_app()
-app.register_blueprint(bp, url_prefix='/tixsys')
+app.register_blueprint(bp)
+app.register_blueprint(google_bp)
+app.register_blueprint(facebook_bp)
+app.register_blueprint(slack_bp)
 migrate.init_app(app, db)
 
 if __name__ == '__main__':

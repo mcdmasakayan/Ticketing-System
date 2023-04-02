@@ -6,7 +6,9 @@ from datetime import datetime, timedelta, timezone
 blacklist = []
 
 def verify_bearer():
-    if request.endpoint not in ('bp.login_user', 'bp.register_user'):
+    print(request.endpoint)
+    if request.endpoint not in ('bp.login_user', 'bp.register_user', 'bp.google_login',
+                                'bp.facebook_login', 'bp.slack_login'):
         jwt_required()
         verify_jwt_in_request()
 
@@ -16,11 +18,13 @@ def verify_bearer():
                                 'message':'Token is not valid.'})
 
 def refresh_access(response):
-    if request.endpoint not in ('bp.login_user', 'bp.register_user', 'bp.logout_user'):
+    print(request.endpoint)
+    if request.endpoint not in ('bp.login_user', 'bp.register_user', 'bp.logout_user',
+                                'bp.google_login', 'bp.facebook_login', 'bp.slack_login'):
         try:
             expiry = get_jwt()['exp']
             threshold = datetime.timestamp(datetime.now(timezone.utc) + timedelta(minutes=20))
- 
+            
             if threshold > expiry:
                 access_token = create_access_token(identity=get_jwt_identity())
                 set_access_cookies(response, access_token)
@@ -47,4 +51,4 @@ def revoke_access():
 def delete_expired_token():
     for token in blacklist:
         if token['exp'] > datetime.timestamp(datetime.now(timezone.utc)):
-            blacklist.pop(token)
+            blacklist.remove(token)
