@@ -43,9 +43,10 @@ def view_task(project_name, task_name, data, get_opened_entity):
                  'date_created':task.date_created,
                  'date_due':task.date_due,
                  'subtasks':[{'public_id':subtask.public_id,
-                             'name':subtask.name,
-                             'done':subtask.done}
-                             for subtask in subtasks]}
+                              'name':subtask.name,
+                              'description':subtask.description,
+                              'done':subtask.done}
+                              for subtask in subtasks]}
     
     return jsonify({'task_data':task_data})
 
