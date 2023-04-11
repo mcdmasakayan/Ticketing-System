@@ -1,5 +1,5 @@
 from flask import Flask
-from extensions import migrate, jwt
+from extensions import migrate, jwt, cors
 from routes.blueprint import bp, google_bp, facebook_bp, slack_bp
 from model.init_db import db
 
@@ -8,6 +8,7 @@ def create_app():
     app.config.from_object('config')
  
     jwt.init_app(app)
+    cors.init_app(app)
     
     with app.test_request_context():
         db.init_app(app)
