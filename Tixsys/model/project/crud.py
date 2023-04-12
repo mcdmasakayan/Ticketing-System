@@ -6,7 +6,7 @@ from model.task.data import Task
 from model.subtask.data import Subtask
 
 def save_project(user_id, data, get_opened_entity):
-    project = get_opened_entity(entity=Project, name=data['name'], archived=False, select='first')
+    project = get_opened_entity(entity=Project, user_id=user_id, name=data['name'], archived=False, select='first')
 
     if project:
         return jsonify({'status':0,
