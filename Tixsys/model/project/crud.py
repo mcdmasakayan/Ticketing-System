@@ -32,6 +32,7 @@ def view_project(project_name, data, get_opened_entity):
 
     project_data = {'public_id':project.public_id,
                     'name':project.name,
+                    "description":project.description,
                     'date_created':project.date_created,
                     'date_updated':project.date_updated,
                     'tasks':[{'public_id':task.public_id,
