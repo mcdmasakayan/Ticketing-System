@@ -25,7 +25,11 @@ def refresh_access(response):
             
             if threshold > expiry:
                 access_token = create_access_token(identity=get_jwt_identity())
+                
                 set_access_cookies(response, access_token)
+
+                response.headers['Authorization'] = f"Bearer {access_token}"
+                response.headers.pop('Set-Cookie', None)
             
         except (RuntimeError, KeyError):
             response = jsonify({'status': 0,
@@ -43,7 +47,7 @@ def revoke_access():
                         'message':'User logged out.'})
     
     unset_access_cookies(response)
-    
+
     return response
 
 def delete_expired_token():

@@ -22,6 +22,9 @@ def authenticate_user(data, get_opened_entity):
 
         set_access_cookies(response, access_token)
 
+        response.headers['Authorization'] = f"Bearer {access_token}"
+        response.headers.pop('Set-Cookie', None)
+
         return response
         
     
