@@ -79,9 +79,7 @@ def dump_project(project_name, data, get_opened_entity):
             subtask.archived = True
 
         task.archived = True
-
         
-
     project.archived = True
     db.session.commit()
 

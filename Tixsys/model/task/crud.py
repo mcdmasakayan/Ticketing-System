@@ -34,7 +34,6 @@ def view_task(project_name, task_name, data, get_opened_entity):
         return jsonify({'status':0,
                         'message':f'Task {task_name} does not exist.'})
     
-
     subtasks = get_opened_entity(entity=Subtask, task_id=task.public_id, archived=False, select='all')
 
     task_data = {'name':task.name,

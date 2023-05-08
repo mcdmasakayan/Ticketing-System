@@ -27,12 +27,9 @@ def authenticate_user(data, get_opened_entity):
 
         return response
         
-    
     return jsonify({'status':0,
                     'message':'Username or Password is invalid.'})
     
-    
-
 def save_user(data, get_opened_entity):
     exist = get_opened_entity(entity=User, email=data['email'], archived=False, select='first')
 
